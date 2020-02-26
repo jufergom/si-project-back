@@ -1,0 +1,5 @@
+#ignore .vscode
+.vscode/*
+
+#ignore si-project-back folder (name of Julio's virtual environment)
+si-project-back/
