@@ -31,7 +31,7 @@ $ pip3 --version
 ```
 
 Now we are going to create a virtual environment inside the project folder
-***Note***: *I recommend naming yout virtual environment as "si-project-back" because the command for creating a virtual environment creates a new folder with the same name as the virtual environment. That folder **should not** be included on the git repository, so I already added that folder name to the .gitignore file. If you want to give a different name to your virtual environment and want to commit changes to this repo, make sure to add it to the .gitignore file.*
+***Note***: *I recommend naming your virtual environment as "si-project-back" because the command for creating a virtual environment creates a new folder with the same name as the virtual environment. That folder **should not** be included on the git repository, so I already added that folder name to the .gitignore file. If you want to give a different name to your virtual environment and want to commit changes to this repo, make sure to add it to the .gitignore file.*
 
 ```sh
 $ cd si-project-back
