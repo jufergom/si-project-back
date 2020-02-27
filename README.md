@@ -80,4 +80,4 @@ $ python3 app.py #run the project
 And that's all! The server will start listening on port 5000.
 The file "app.py" is the one that has all the endpoints of the REST Api.
 
-Fun fact: if you open the project directory with Visual Studio Code, the VS Code terminal will automatically start running the virtual environment, in that way you don't have to activate and deactivate the virtual environment manually.
+Fun fact: if you open the project directory with Visual Studio Code, the VS Code terminal will automatically start running the virtual environment, in that way you won't have to activate and deactivate the virtual environment manually.
