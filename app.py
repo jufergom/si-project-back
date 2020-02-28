@@ -49,16 +49,16 @@ def connection_test():
 @app.route('/api/login', methods = ['POST'])
 def login():
     content = request.json
-    r_email = content['email']
+    r_username = content['username']
     r_password = content['password']
     cnx = get_connection()
     cursor = cnx.cursor()
 
     query = ("SELECT email, password FROM users WHERE email = %s AND password = %s")
-    cursor.execute(query, (r_email, r_password))
+    cursor.execute(query, (r_username, r_password))
     resp = Response(status=204, mimetype='application/json')
     for (email, password) in cursor:
-        if email == r_email and password == r_password:
+        if email == r_username and password == r_password:
             resp = Response(status=200, mimetype='application/json')
         else:
             resp = Response(status=204, mimetype='application/json')
