@@ -1,8 +1,10 @@
 from flask import Flask, escape, request, jsonify, Response
 import json
 import mysql.connector
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app)
 
 class Person:
     def __init__(self, name, age):
