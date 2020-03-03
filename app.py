@@ -54,18 +54,12 @@ def login():
     cnx = get_connection()
     cursor = cnx.cursor()
 
-    query = ("SELECT email, password FROM users WHERE email = %s AND password = %s")
+    query = ("SELECT username, password FROM users WHERE username = %s AND password = %s")
     cursor.execute(query, (r_username, r_password))
     resp = Response(status=204, mimetype='application/json')
-    for (email, password) in cursor:
-        if email == r_username and password == r_password:
+    for (username, password) in cursor:
+        if username == r_username and password == r_password:
             resp = Response(status=200, mimetype='application/json')
-        else:
-            resp = Response(status=204, mimetype='application/json')
-    #if content['username'] == "jufergom" and content['password'] == "1234":
-        #resp = Response(status=200, mimetype='application/json')
-    #else:
-        #resp = Response(status=204, mimetype='application/json')
     return resp
 
 if __name__ == "__main__":
