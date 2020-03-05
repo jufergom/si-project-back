@@ -6,3 +6,6 @@ si-project-back/
 
 #ignore pycache
 __pycache__/
+
+Clasificacion_clasi.ipynb
+cost-of-living.csv
