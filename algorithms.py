@@ -1,6 +1,7 @@
 import pandas as pd
 from sklearn import linear_model
 from sklearn.model_selection import train_test_split
+import json
 
 #data_file = pd.read_csv("cost-of-living.csv")
 #data_file = data_file.to_json()
@@ -11,6 +12,11 @@ class ModelInformation:
     def __init__(self, precision, model):
         self.precision = precision
         self.model = model
+    
+    #converts class to json output
+    def to_json(self):
+        return json.dumps(self, default=lambda o: o.__dict__, 
+            sort_keys=True, indent=4)
 
 def error_model(y_test,y_model):
     #suma del error cuadrático
@@ -31,7 +37,7 @@ def error_model(y_test,y_model):
       the model (int)
 '''
 def linear_regression(file, independent_variables, tst_size):
-    data = pd.read_json(file)
+    data = pd.read_json(file, orient='records')
     copy_data = data.rename(index=data.loc[:,data.columns[0]])
     T_data = copy_data.drop(copy_data.columns[0],axis=1).T
 
