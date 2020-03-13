@@ -14,19 +14,15 @@ def hello():
     name = request.args.get("name", "World")
     return f'Hello, {escape(name)}!'
 
-@app.route('/linear', methods = ['GET'])
+@app.route('/linear', methods = ['POST'])
 def linear_regression_endpoint():
     content = request.json
     variables = content['variables']
     parse_data = content['parseData']
 
     model = algorithms.linear_regression(json.dumps(parse_data), variables, 0.33)
-    #print(type(model.precision))
-    #print(model.precision.index[0])
-    #print(type(model.precision.index[0]))
-    #return str(model.precision.index[0].item())
     return jsonify(
-        precision = model.precision.index[0].item()
+        precision = model.precision.iloc[0].item()
     )
 
 if __name__ == "__main__":
