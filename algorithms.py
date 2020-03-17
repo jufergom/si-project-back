@@ -36,13 +36,16 @@ def error_model(y_test,y_model):
     - tst_size is the portion of the data that is to be used to train
       the model (int)
 '''
-def linear_regression(file, independent_variables, tst_size):
+def linear_regression(file, x_name, y_name, tst_size):
     data = pd.read_json(file, orient='records')
-    copy_data = data.rename(index=data.loc[:,data.columns[0]])
-    T_data = copy_data.drop(copy_data.columns[0],axis=1).T
+    #copy_data = data.rename(index=data.loc[:,data.columns[0]])
+    #T_data = copy_data.drop(copy_data.columns[0],axis=1).T
 
-    X = T_data.iloc[:, 0]
-    Y = T_data.iloc[:, 1]
+    #X = T_data.iloc[:, 0]
+    #Y = T_data.iloc[:, 1]
+
+    X = data[x_name]
+    Y = data[y_name]
 
     X_train, X_test, y_train, y_test = train_test_split(X, Y, test_size=tst_size)
 
