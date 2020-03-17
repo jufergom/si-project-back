@@ -4,17 +4,17 @@ from users import users_api
 import algorithms
 import json
 
-app = Flask(__name__)
-CORS(app)
+application = Flask(__name__)
+CORS(application)
 
-app.register_blueprint(users_api)
+application.register_blueprint(users_api)
 
-@app.route('/')
+@application.route('/')
 def hello():
     name = request.args.get("name", "World")
     return f'Hello, {escape(name)}!'
 
-@app.route('/linear', methods = ['POST'])
+@application.route('/linear', methods = ['POST'])
 def linear_regression_endpoint():
     content = request.json
     variables = content['variables']
@@ -26,4 +26,4 @@ def linear_regression_endpoint():
     )
 
 if __name__ == "__main__":
-    app.run()
+    application.run()
