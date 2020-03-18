@@ -17,12 +17,13 @@ def hello():
 @application.route('/linear', methods = ['POST'])
 def linear_regression_endpoint():
     content = request.json
-    ind_variables = content['variables']
+    ind_variables = content['selectedVariablesIndependent']
     print(ind_variables)
-    dep_variable = content['dependentVariable']
+    dep_variable = content['selectedVariableDependent']
+    print(dep_variable)
     parse_data = content['parseData']
 
-    model = algorithms.linear_regression(json.dumps(parse_data), ind_variables, dep_variable, 0.33)
+    model = algorithms.linear_regression(json.dumps(parse_data), ind_variables, dep_variable,0.2)
     print(model.precision)
     print(type(model.precision))
     return jsonify(
