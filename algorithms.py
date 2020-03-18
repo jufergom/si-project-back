@@ -48,10 +48,14 @@ def linear_regression(file, ind_variables, dep_variable, tst_size):
     Y = data[dep_variable]
 
     X_train, X_test, y_train, y_test = train_test_split(X, Y, test_size=tst_size)
+    X_test = X_test.fillna(X_test.mean())
+    X_train = X_train.fillna(X_train.mean())
+    y_train = y_train.fillna(y_train.mean())
+    #y_test = y_test.fillna(y_test.mean())
 
     model_reg = linear_model.LinearRegression()
 
-    model_reg.fit(X_train,y_train)
+    model_reg.fit(X_train, y_train)
 
     y_model = model_reg.predict(X_test)
 
