@@ -1,31 +1,24 @@
+import numpy as np
 import pandas as pd
 from sklearn import linear_model
 from sklearn.model_selection import train_test_split
+from sklearn.cluster import KMeans
+from sklearn.neural_network import MLPClassifier
+from sklearn.metrics import classification_report,confusion_matrix
 import json
 
-#data_file = pd.read_csv("cost-of-living.csv")
-#data_file = data_file.to_json()
-
-#vars = ["Apartment (1 bedroom) in City Centre","Apartment (3 bedrooms) in City Centre"]
-
 class ModelInformation:
-    def __init__(self, precision, model):
+    def __init__(self, precision, responseText, model):
         self.precision = precision
+        self.responseText = responseText
         self.model = model
     
-    #converts class to json output
     def to_json(self):
-        return json.dumps(self, default=lambda o: o.__dict__, 
-            sort_keys=True, indent=4)
+        return json.dumps(self, default=lambda o: o.__dict__, sort_keys=True, indent=4)
 
 def error_model(y_test,y_model):
-    #suma del error cuadrático
     error_c = ((y_model - y_test)**2).sum()
-    #desviación
     desviacion = ((y_test - y_test.mean())**2).sum()
-
-    #R_2
-
     R_2 = 1 - (error_c/desviacion)
     return R_2
 
@@ -38,12 +31,6 @@ def error_model(y_test,y_model):
 '''
 def linear_regression(file, ind_variables, dep_variable, tst_size):
     data = pd.read_json(file, orient='records')
-    #copy_data = data.rename(index=data.loc[:,data.columns[0]])
-    #T_data = copy_data.drop(copy_data.columns[0],axis=1).T
-
-    #X = T_data.iloc[:, 0]
-    #Y = data.iloc[:, 3]
-
     X = data[ind_variables]
     Y = data[dep_variable]
 
@@ -54,18 +41,82 @@ def linear_regression(file, ind_variables, dep_variable, tst_size):
     #y_test = y_test.fillna(y_test.mean())
 
     model_reg = linear_model.LinearRegression()
-
     model_reg.fit(X_train, y_train)
-
     y_model = model_reg.predict(X_test)
-
+    
     error = error_model(y_test,y_model)
 
-    # print("Precision % 5.5f \n" %(error))
+    response = "Modelo Producido [" + "f(x) = " + str(model_reg.coef_[0]) + "x + " + str(model_reg.intercept_) + "] Precision [" + str(error) + "]"
+    return ModelInformation(error, response, model_reg)
+    
+def logistic_regression(file, type_variable, tst_size):
+    data = pd.read_json(file, orient='records')
+    tX = data.drop([type_variable[0].decode('utf_8')],1)
+    tY = data[type_variable[0].decode('utf_8')]
+    
+    X = np.array(tX)
+    X = X[:-1]
+    Y = np.array(tY)
+    Y = Y[:-1]
+    
+    X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=tst_size)
+    
+    model_reg = linear_model.LogisticRegression()
+    model_reg.fit(X_train, Y_train)
+    y_model = model_reg.predict(X_test)
+    
+    error = 1 - (y_model!=Y_test).sum()/len(y_model)
+    
+    response = "Coeficientes Modelo Producido " + str(model_reg.coef_) + " Precision [" + str(error) + "]"
+    return ModelInformation(error, response, model_reg)
 
-    return ModelInformation(error, model_reg)
+def clustering(file, numberOfClusters, type_variable):
+    data = pd.read_json(file, orient='records')
+    X = data.drop([type_variable[0].decode('utf_8')],1)
+    Y = data[type_variable[0].decode('utf_8')]
+    
+    X = X[:-1]
+    Y = Y[:-1]
+    
+    KM_clusters = KMeans(n_clusters=numberOfClusters, init='k-means++').fit(X)
+    KM_clustered = X.copy()
+    KM_clustered.loc[:,'Cluster'] = KM_clusters.labels_
+    
+    KM_clust_sizes = KM_clustered.groupby('Cluster').size().to_frame()
+    KM_clust_sizes.columns = ["KM_size"]
+    sizes = KM_clust_sizes["KM_size"]
+        
+    error = 1 - abs(Y - KM_clustered.Cluster).sum()/len(Y)
+    
+    response = "Se crearon " + str(numberOfClusters) + " clusters, con volumenes ["
+    
+    for size in sizes:
+        response = response + str(size) + ","
+        
+    response = response[:-1]
+    response = response + "] Precision [" + str(error) + "]"
+    
+    model = {}
+    return ModelInformation(error, response, model)
 
-
-# obj = linear_regression(data_file, vars, 0.33)
-
-# print("Precision: %f" %(obj.precision))
+def neural_network(file,outputVariable,hidden_layers_1,hidden_layers_2,activationFunction,numberOfIterations,tst_size):
+    data = pd.read_json(file, orient='records')
+    X = data.drop([outputVariable.decode('utf_8')],1)
+    Y = data[outputVariable.decode('utf_8')]
+    
+    X = X[:-1]
+    Y = Y[:-1]
+    
+    X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=tst_size)
+    
+    mlp = MLPClassifier(hidden_layer_sizes=(hidden_layers_1,hidden_layers_2), activation = activationFunction, max_iter = numberOfIterations)
+    mlp.fit(X_train,Y_train)
+    
+    predictions = mlp.predict(X_test)
+    
+    confusionMatrix = confusion_matrix(Y_test, predictions)
+    
+    error = 1
+    model = {}
+    response = "Confusion Matrix " + str(confusionMatrix)
+    return ModelInformation(error, response, model)
