@@ -51,6 +51,17 @@ def clustering_endpoint():
         precision = model.precision,
         responseText = model.responseText
     )
+
+@application.route('/clustering-noprec', methods = ['POST'])
+def clustering_endpoint_noprec():
+    content = request.json
+    number_clusters = content['numberCluster']
+    parse_data = content['parseData']
+    model = algorithms.clustering_noprec(json.dumps(parse_data), number_clusters)
+    return jsonify(
+        precision = model.precision,
+        responseText = model.responseText
+    )
     
 @application.route('/neuralnetwork', methods = ['POST'])
 def neural_network_endpoint():

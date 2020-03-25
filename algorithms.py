@@ -99,6 +99,29 @@ def clustering(file, numberOfClusters, type_variable):
     model = {}
     return ModelInformation(error, response, model)
 
+def clustering_noprec(file, numberOfClusters):
+    data = pd.read_json(file, orient='records')
+    
+    X = X[:-1]
+    Y = Y[:-1]
+    
+    KM_clusters = KMeans(n_clusters=numberOfClusters, init='k-means++').fit(X)
+    KM_clustered = X.copy()
+    KM_clustered.loc[:,'Cluster'] = KM_clusters.labels_
+    
+    KM_clust_sizes = KM_clustered.groupby('Cluster').size().to_frame()
+    KM_clust_sizes.columns = ["KM_size"]
+    sizes = KM_clust_sizes["KM_size"]
+    response = "Se crearon " + str(numberOfClusters) + " clusters, con volumenes ["
+    
+    for size in sizes:
+        response = response + str(size) + ","
+
+    error = 0
+    model = {}
+    return ModelInformation(error, response, model)
+
+
 def neural_network(file,outputVariable,hidden_layers_1,hidden_layers_2,activationFunction,numberOfIterations,tst_size):
     data = pd.read_json(file, orient='records')
     X = data.drop([outputVariable.decode('utf_8')],1)
