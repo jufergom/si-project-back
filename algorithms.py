@@ -101,7 +101,7 @@ def clustering(file, numberOfClusters, type_variable):
 
 def clustering_noprec(file, numberOfClusters):
     data = pd.read_json(file, orient='records')
-    X = data  
+    X = data.iloc[:,:len(data.columns)]
     KM_clusters = KMeans(n_clusters=numberOfClusters, init='k-means++').fit(X)
     KM_clustered = X.copy()
     KM_clustered.loc[:,'Cluster'] = KM_clusters.labels_
