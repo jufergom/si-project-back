@@ -15,7 +15,7 @@ mysql-connector-python==8.0.19
 numpy==1.18.1
 pandas==1.0.1
 protobuf==3.6.1
-PyJWT==1.7.1
+PyJWT==2.4.0
 python-dateutil==2.8.1
 pytz==2019.3
 requests==2.23.0
